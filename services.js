@@ -1,84 +1,68 @@
-// ===== DATA =====
-const services = [
-  {
-    title: 'Website Design',
-    category: 'frontend',
-    description: 'Custom-built marketing and product sites, designed to convert visitors and reflect your brand.',
-  },
-  {
-    title: 'App Development',
-    category: 'frontend',
-    description: 'Responsive, fast web apps built with modern frontend frameworks.',
-  },
-  {
-    title: 'UI/UX Design',
-    category: 'design',
-    description: 'Interface and experience design grounded in real user research, not guesswork.',
-  },
-  {
-    title: 'Backend Systems',
-    category: 'backend',
-    description: 'APIs, databases, and infrastructure built to scale with your product.',
-  },
-  {
-    title: 'Animations & Transitions',
-    category: 'frontend',
-    description: 'Purposeful motion design that guides attention without slowing the page down.',
-  },
-  {
-    title: 'Software Engineering',
-    category: 'backend',
-    description: 'General engineering support — architecture, code review, and long-term maintenance.',
-  },
-];
+ if (typeof lucide !== 'undefined') { lucide.createIcons(); }
 
-// ===== RENDER =====
-function renderServices(filter) {
-  const grid = document.getElementById('servicesGrid');
-  if (!grid) return;
+    // Mobile Navigation Controls
+    function openMobileNav() {
+      document.getElementById('mobileMenu').classList.add('active');
+      document.getElementById('menuOverlay').classList.add('active');
+    }
 
-  grid.innerHTML = '';
+    function closeMobileNav() {
+      document.getElementById('mobileMenu').classList.remove('active');
+      document.getElementById('menuOverlay').classList.remove('active');
+    }
 
-  services
-    .filter((service) => filter === 'all' || service.category === filter)
-    .forEach((service) => {
-      const card = document.createElement('div');
-      card.className = 'service-card';
-      card.innerHTML = `
-        <span class="service-tag">${service.category}</span>
-        <h3>${service.title}</h3>
-        <p>${service.description}</p>
-      `;
-      grid.appendChild(card);
-    });
-}
+    // Service Filtering
+    function filterServices(category, btn) {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-// ===== FILTER HANDLING =====
-function filterServices(category, buttonEl) {
-  document.querySelectorAll('.filter-btn').forEach((btn) => {
-    btn.classList.remove('active');
-  });
-  buttonEl.classList.add('active');
-  renderServices(category);
-}
+      const cards = document.querySelectorAll('.service-card');
+      cards.forEach(card => {
+        if (category === 'all' || card.dataset.cat === category) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
 
-// ===== CTA HANDLING =====
-function handleStartProject() {
-  const cta = document.querySelector('.cta-box');
-  if (cta) {
-    cta.scrollIntoView({ behavior: 'smooth' });
-  }
-}
+    // Modal Control
+    function openModal(title, description) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalDescription').innerText = description;
+      document.getElementById('serviceModal').classList.add('open');
+    }
 
-// ===== INIT =====
-document.addEventListener('DOMContentLoaded', () => {
-  renderServices('all');
+    function closeModal() {
+      document.getElementById('serviceModal').classList.remove('open');
+    }
 
-  document.querySelectorAll('.filter-btn').forEach((btn) => {
-    btn.addEventListener('click', () => filterServices(btn.dataset.filter, btn));
-  });
+    // Architecture Configurator Logic
+    const stacks = {
+      webapp: [
+        "Client Layer: React / Next.js (Edge Rendered)",
+        "API Gateway: C# .NET Core REST Endpoint",
+        "Database Layer: PostgreSQL Cluster + Redis Cache"
+      ],
+      realtime: [
+        "Client Layer: WebSockets / Event Listeners",
+        "Messaging Node: Node.js Broker & Pub/Sub",
+        "Cache & Memory: Redis Stateful Memory Store"
+      ],
+      python_ai: [
+        "Input API: FastAPI Async Router",
+        "Processing Engine: Python Data Pipeline",
+        "Containerization: Isolated Docker Sandbox"
+      ]
+    };
 
-  document.querySelectorAll('[data-action="start-project"]').forEach((btn) => {
-    btn.addEventListener('click', handleStartProject);
-  });
-});
+    function selectStack(key, element) {
+      document.querySelectorAll('.stack-option').forEach(el => el.classList.remove('active'));
+      element.classList.add('active');
+
+      const diagram = document.getElementById('stackDiagram');
+      diagram.innerHTML = stacks[key].map(step => `<div class="node">${step}</div>`).join('');
+    }
+
+    // Load initial stack
+    selectStack('webapp', document.querySelector('.stack-option'));
